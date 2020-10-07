@@ -1,0 +1,408 @@
+{
+    "auth-services": {
+        "tier_type" : "node",
+        "paths": {
+            "/api/login": {
+                "actions": [
+                    {
+                        "name": "login-processing",
+                        "type": "ProcessingAction",
+                        "properties": {
+                            "minDuration": 150,
+                            "maxDuration": 400,
+                            "numCores": 2,
+                            "numThreadsPerCore": 3,
+                            "load": 0.2
+                        }
+                    },
+                    {
+                        "name": "data-services",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "http://data-services:3000/api/login"
+                        }
+                    }
+                ]
+            },
+            "*": {
+                "actions": [
+                    {
+                        "name": "catch-all-processing",
+                        "type": "ProcessingAction",
+                        "properties": {
+                            "minDuration": 150,
+                            "maxDuration": 800,
+                            "numCores": 2,
+                            "numThreadsPerCore": 3,
+                            "load": 0.2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "data-services": {
+        "tier_type" : "node",
+        "paths": {
+            "/api/login": {
+                "actions": [
+                    {
+                        "name": "mongo-sessions",
+                        "type": "MongoAction",
+                        "properties": {
+                            "action": "Insert",
+                            "connectionString": "mongo-sessions:27017",
+                            "database": "sessions",
+                            "collection": "sessions"
+                        }
+                    },
+                    {
+                        "name": "mongo-accounts",
+                        "type": "MongoAction",
+                        "properties": {
+                            "action": "Insert",
+                            "connectionString": "mongo-accounts:27017",
+                            "database": "accounts",
+                            "collection": "accounts"
+                        }
+                    }
+                ]
+            },
+            "*": {
+                "actions": [
+                    {
+                        "name": "catch-all-processing",
+                        "type": "ProcessingAction",
+                        "properties": {
+                            "minDuration": 150,
+                            "maxDuration": 800,
+                            "numCores": 2,
+                            "numThreadsPerCore": 3,
+                            "load": 0.2
+                        }
+                    }
+                ]
+            }            
+        }
+    },
+    "candidate-services": {
+        "tier_type" : "java",
+        "paths": {
+            "/api/search": {
+                "actions": [
+                    {
+                        "name": "lambda-person-search",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "##NODEJS_LAMBDA_URL##/person/random"
+                        }
+                    },
+                    {
+                        "name" : "lambda-resume-search",
+                        "type" : "HttpAction",
+                        "properties" : {
+                            "requestMethod": "GET",
+                            "url": "##PYTHON_LAMBDA_URL##/resume/random"
+                        }
+                    }
+                ]
+            },
+            "/api/submitCandidate": {
+                "actions": [
+                    {
+                        "name": "lambda-submit-candidate",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "##NODEJS_LAMBDA_URL##/person/submit"
+                        }
+                    },
+                    {
+                        "name": "lambda-submit-resume",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "##PYTHON_LAMBDA_URL##/resume/upload"
+                        }
+                    }                    
+                ]
+            },
+            "*": {
+                "actions": [
+                    {
+                        "name": "catch-all-processing",
+                        "type": "ProcessingAction",
+                        "properties": {
+                            "minDuration": 150,
+                            "maxDuration": 800,
+                            "numCores": 2,
+                            "numThreadsPerCore": 3,
+                            "load": 0.2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "job-listing-services": {
+        "tier_type" : "java",
+        "paths" : {
+            "/api/addJob": {
+                "actions": [
+                    {
+                        "name": "lambda-add-job",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "##JAVA_LAMBDA_URL##/orders/submit"
+                        }
+                    },
+                    {
+                        "name": "add-job-processing",
+                        "type": "ProcessingAction",
+                        "properties": {
+                            "minDuration": 150,
+                            "maxDuration": 500,
+                            "numCores": 2,
+                            "numThreadsPerCore": 2,
+                            "load": 0.4,
+                            "canSpike": true,
+                            "pctSlowTxns": 0.25,
+                            "spikeMultiplier": 10
+                        }
+                    }
+                ]
+            },
+            "/api/getJob": {
+                "actions": [
+                    {
+                        "name": "lambda-add-job",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "##JAVA_LAMBDA_URL##/orders/recent"
+                        }
+                    },
+                    {
+                        "name": "add-job-processing",
+                        "type": "ProcessingAction",
+                        "properties": {
+                            "minDuration": 150,
+                            "maxDuration": 500,
+                            "numCores": 2,
+                            "numThreadsPerCore": 2,
+                            "load": 0.4,
+                            "canSpike": true,
+                            "pctSlowTxns": 0.25,
+                            "spikeMultiplier": 10
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "core-services": {
+        "tier_type": "java",
+        "paths": {
+            "/api/login": {
+                "actions": [
+                    {
+                        "name": "login-services",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "http://auth-services:3000/api/login"
+                        }
+                    }                    
+                ]
+            },
+            "/api/search": {
+                "actions": [  
+                    {
+                        "name": "candidate-services-search",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "http://candidate-services:8080/api/search"
+                        }
+                    },                  
+                    {
+                        "name": "search-processing",
+                        "type": "ProcessingAction",
+                        "properties": {
+                            "minDuration": 150,
+                            "maxDuration": 500,
+                            "numCores": 2,
+                            "numThreadsPerCore": 2,
+                            "load": 0.4,
+                            "canSpike": true,
+                            "pctSlowTxns": 0.25,
+                            "spikeMultiplier": 10
+                        }
+                    }
+                ]
+            },
+            "/api/addJob": {
+                "actions": [
+                    {
+                        "name": "lambda-add-job",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "http://job-listing-services:8080/api/addJob"
+                        }
+                    }                    
+                ]
+            },
+            "/api/getJob": {
+                "actions": [
+                    {
+                        "name": "lambda-add-job",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "http://job-listing-services:8080/api/getJob"
+                        }
+                    },
+                    {
+                        "name": "add-job-processing",
+                        "type": "ProcessingAction",
+                        "properties": {
+                            "minDuration": 150,
+                            "maxDuration": 500,
+                            "numCores": 2,
+                            "numThreadsPerCore": 2,
+                            "load": 0.4,
+                            "canSpike": true,
+                            "pctSlowTxns": 0.25,
+                            "spikeMultiplier": 10
+                        }
+                    }
+                ]
+            },
+            "/api/submitCandidate": {
+                "actions": [     
+                    {
+                        "name": "candidate-services-submit",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "http://candidate-services:8080/api/submitCandidate"
+                        }
+                    },               
+                    {
+                        "name": "submit-candidate-processing",
+                        "type": "ProcessingAction",
+                        "properties": {
+                            "minDuration": 150,
+                            "maxDuration": 500,
+                            "numCores": 2,
+                            "numThreadsPerCore": 2,
+                            "load": 0.4,
+                            "canSpike": true,
+                            "pctSlowTxns": 0.25,
+                            "spikeMultiplier": 10
+                        }
+                    }
+                ]
+            },
+            "*": {
+                "actions": [
+                    {
+                        "name": "catch-all-processing",
+                        "type": "ProcessingAction",
+                        "properties": {
+                            "minDuration": 150,
+                            "maxDuration": 800,
+                            "numCores": 2,
+                            "numThreadsPerCore": 3,
+                            "load": 0.2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "web-api": {
+        "tier_type" : "node",
+        "paths" : {
+            "/api/login": {
+                "actions": [
+                    {
+                        "name": "core-services-login",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "http://core-services:8080/api/login"
+                        }
+                    }
+                ]
+            },
+            "/api/search": {
+                "actions": [
+                    {
+                        "name": "core-services-search",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "http://core-services:8080/api/search"
+                        }
+                    }
+                ]
+            },
+            "/api/submitCandidate": {
+                "actions": [
+                    {
+                        "name": "core-services-submit",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "http://core-services:8080/api/submitCandidate"
+                        }
+                    }
+                ]
+            },
+            "/api/addJob": {
+                "actions": [
+                    {
+                        "name": "core-services-add-job",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "http://core-services:8080/api/addJob"
+                        }
+                    }
+                ]
+            },
+            "/api/getJob": {
+                "actions": [
+                    {
+                        "name": "core-services-get-job",
+                        "type": "HttpAction",
+                        "properties": {
+                            "requestMethod": "GET",
+                            "url": "http://core-services:8080/api/getJob"
+                        }
+                    }
+                ]
+            },
+            "*": {
+                "actions": [
+                    {
+                        "name": "catch-all-processing",
+                        "type": "ProcessingAction",
+                        "properties": {
+                            "minDuration": 150,
+                            "maxDuration": 800,
+                            "numCores": 2,
+                            "numThreadsPerCore": 3,
+                            "load": 0.2
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
