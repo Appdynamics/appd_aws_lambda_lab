@@ -6,6 +6,7 @@ start=$(date +%s)
 
 # Stopping main application
 echo "Stopping main application..."
+kill $(ps aux | grep '[b]ash ./load.sh' | awk '{print $2}')
 cd $BASE_DIR/docker-compose
 ./stop.sh &> /dev/null || { echo "Could not stop main application."; exit 1; }
 rm .env
