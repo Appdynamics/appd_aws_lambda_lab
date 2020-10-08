@@ -70,17 +70,5 @@ echo
 echo "----------"
 echo
 
-# Configure docker-compose application
-cd $BASE_DIR/docker-compose
-sed -i "s/##APPLICATION_NAME##/$APPLICATION_NAME/g" ./controller.env
-sed -i "s/##CONTROLLER_HOST##/$CONTROLLER_HOST/g" ./controller.env
-sed -i "s/##CONTROLLER_SSL_ENABLED##/$CONTROLLER_SSL_ENABLED/g" ./controller.env
-sed -i "s/##CONTROLLER_PORT##/$CONTROLLER_PORT/g" ./controller.env
-
-cat <<EOF >.env
-APPDYNAMICS_AGENT_ACCOUNT_NAME=$ACCOUNT_NAME
-APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY=$ACCESS_KEY
-EOF
-
 end=$(date +%s)
 echo "Execution time took $(expr $end - $start) seconds."
