@@ -7,35 +7,18 @@ UNIQUE_LAB_ID=$(uuidgen | tail -c 7)
 AUTH=eyJwYXNzd29yZCI6IkMxc2MwMTIzIyJ9
 export AWS_REGION=$(aws configure get region)
 
-# TODO: Run Java file to scaffold application / user / role.
-
-APPLICATION_NAME=lambda-lab-$UNIQUE_LAB_ID
-
-# Get controller information
-echo "Retrieving AppDynamics controller information..."
-
-VAULT_URL=https://35.227.66.33
-VAULT_LOGIN_URL=$VAULT_URL/v1/auth/userpass/login/cloud-team
-VAULT_INFO_URL=$VAULT_URL/v1/kv/cloud-labs/controller-info
-
-VAULT_AUTH_TOKEN="$(echo "$AUTH" | base64 --decode | xargs -0 -I AUTHSTR curl -k --request POST --data 'AUTHSTR' --silent $VAULT_LOGIN_URL | jq -r '.auth.client_token')"
-CONTROLLER_INFO="$(curl -k --header "Authorization: Bearer $VAULT_AUTH_TOKEN" --header "Content-Type: application/json" --silent $VAULT_INFO_URL | jq -r '.data')"
-ACCOUNT_NAME="$(jq -r -n --argjson data "$CONTROLLER_INFO" '$data["controller-account"]')"
-CONTROLLER_HOST="$(jq -r -n --argjson data "$CONTROLLER_INFO" '$data["controller-host-name"]')"
-CONTROLLER_PORT="$(jq -r -n --argjson data "$CONTROLLER_INFO" '$data["controller-port"]')"
-CONTROLLER_SSL_ENABLED="$(jq -r -n --argjson data "$CONTROLLER_INFO" '$data["controller-ssl-enabled"]')"
-ACCESS_KEY="$(jq -r -n --argjson data "$CONTROLLER_INFO" '$data["controller-access-key"]')"
-echo "AppDynamics controller information retrieved."
-echo
-echo "----------"
-echo
+# Run Java file to scaffold application / user / role.
+echo "Creating workshop user and application..."
+cd $BASE_DIR/scripts
+java -DworkshopUtilsConf=./lambda-workshop-setup.yaml -DworkshopLabUserPrefix=$UNIQUE_LAB_ID -DworkshopAction=setup -jar ./AD-Workshop-Utils.jar
+echo "Workshop user and application created."
 
 # Auto-deploy uninstrumented Python Lambda
 echo "Deploying Python Lambda function..."
 cd $BASE_DIR/python
 sed -i "s/##UNIQUE_ID##/$UNIQUE_LAB_ID/g" ./serverless.yml
 npm install --quiet --save serverless-python-requirements serverless-s3-remover serverless-stack-output  || { echo "Python dependency installation failed."; exit 1; }
-mkdir .build
+mkdir -p .build
 sls deploy -r $AWS_REGION  || { echo "Python Lambda deployment failed."; exit 1; }
 cat .build/output.json | jq -r '.ServiceEndpoint' | xargs -I {} sh -c "sed -i 's|##PYTHON_LAMBDA_URL##|{}|g' ../docker-compose/graph.json"
 echo "Python Lambda Function deployed."
@@ -48,7 +31,7 @@ cd $BASE_DIR/node
 echo "Deploying Node Lambda function..."
 sed -i "s/##UNIQUE_ID##/$UNIQUE_LAB_ID/g" ./serverless.yml
 npm install --quiet && npm install --quiet --save serverless-stack-output || { echo "Node dependency installation failed."; exit 1; }
-mkdir .build
+mkdir -p .build
 sls deploy -r $AWS_REGION  || { echo "Node Lambda deployment failed."; exit 1; }
 cat .build/output.json | jq -r '.ServiceEndpoint' | xargs -I {} sh -c "sed -i 's|##NODEJS_LAMBDA_URL##|{}|g' ../docker-compose/graph.json"
 echo "Node Lambda function deployed."
@@ -62,7 +45,7 @@ echo "Deploying Java Lambda function..."
 sed -i "s/##UNIQUE_ID##/$UNIQUE_LAB_ID/g" ./serverless.yml
 npm install --quiet --save serverless-stack-output  || { echo "Java dependency installation failed."; exit 1; }
 mvn clean package || { echo "Java build failed."; exit 1; }
-mkdir .build 
+mkdir -p .build 
 sls deploy -r $AWS_REGION || { echo "Java Lambda deployment failed."; exit 1; }
 cat .build/output.json | jq -r '.ServiceEndpoint' | xargs -I {} sh -c "sed -i 's|##JAVA_LAMBDA_URL##|{}|g' ../docker-compose/graph.json"
 echo "Java Lambda function deployed."

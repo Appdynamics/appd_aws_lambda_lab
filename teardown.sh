@@ -42,6 +42,12 @@ cd $BASE_DIR/node
 sls remove -r $AWS_REGION &> /dev/null || { echo "Could not remove Node Lambdas."; exit 1; }
 echo "Node Lambda function removed."
 
+# Run Java file to scaffold application / user / role.
+echo "Deleting workshop user and application..."
+cd $BASE_DIR/scripts
+java -DworkshopUtilsConf=./lambda-workshop-teardown.yaml -DworkshopAction=teardown -jar ./AD-Workshop-Utils.jar
+echo "Workshop user and application deleted."
+
 cd $BASE_DIR
 end=$(date +%s)
 echo "Execution time took $(expr $end - $start) seconds."

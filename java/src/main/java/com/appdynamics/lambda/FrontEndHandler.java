@@ -27,8 +27,7 @@ import com.github.javafaker.Faker;
 
 public class FrontEndHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
 
-	private static final Logger LOG = LogManager.getLogger(FrontEndHandler.class);
-	private static final Map<String, Object> CONTROLLER_INFO = SecretsManager.getSecret();
+	private static final Logger LOG = LogManager.getLogger(FrontEndHandler.class);	
 
 	@Override
 	public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {

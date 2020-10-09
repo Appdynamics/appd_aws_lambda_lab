@@ -21,8 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public class BackEndHandler implements RequestStreamHandler {
 
-    private static final Logger LOG = LogManager.getLogger(FrontEndHandler.class);
-    private static final Map<String, Object> CONTROLLER_INFO = SecretsManager.getSecret();
+    private static final Logger LOG = LogManager.getLogger(FrontEndHandler.class);    
     
     @Override
     public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {            
