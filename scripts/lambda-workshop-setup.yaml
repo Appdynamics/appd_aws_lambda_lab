@@ -2,7 +2,7 @@
 
 description: "Example AD-Workshop configuration"
 #teardownFilePath: "/opt/appdynamics/workshopuser/teardown/workshop-teardown.yaml"
-teardownFilePath: "C:/opt/appdynamics/workshopuser/teardown/lambda-workshop-teardown.yaml"
+teardownFilePath: "./lambda-workshop-teardown.yaml"
 cloudProvider: "aws"
 debugLogging: false
 
