@@ -173,10 +173,13 @@ public class CommerceOrder {
         }
     }
 
-    public List<CommerceOrder> recentOrders() throws IOException {
-        DynamoDBScanExpression scanExp = new DynamoDBScanExpression();
-        scanExp.setLimit(1);        
-        List<CommerceOrder> results = this.mapper.scan(CommerceOrder.class, scanExp);
+    public List<CommerceOrder> recentOrders() throws IOException {        
+        List<CommerceOrder> results = new List<CommerceOrder>();
+
+        for (int i = 0; i < 10; i++) {
+            results.add(new CommerceOrder.Builder().random().build());
+        }
+
         return results;
     }
 
