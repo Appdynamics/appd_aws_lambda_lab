@@ -3,6 +3,7 @@ package com.appdynamics.lambda.dal;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.Calendar;
@@ -174,7 +175,7 @@ public class CommerceOrder {
     }
 
     public List<CommerceOrder> recentOrders() throws IOException {        
-        List<CommerceOrder> results = new List<CommerceOrder>();
+        List<CommerceOrder> results = new ArrayList<CommerceOrder>();
 
         for (int i = 0; i < 10; i++) {
             results.add(new CommerceOrder.Builder().random().build());
