@@ -117,7 +117,11 @@ controllerTasks:
         targetTags:
           - tagKey: "${ADWRKSHP_APM_APP_NAME}"
             tagValue: "@[ADWRKSHP_APM_APP_NAME]"    
-
+      
+      - templateName: "lambda-environment-vars"
+        targetTags:
+          - tagKey: "${ADWRKSHP_APM_APP_NAME}"
+            tagValue: "@[ADWRKSHP_APM_APP_NAME]"         
 
  # !!!! Ensure that this is the last controller task in the in the list
  # of controller tasks defined in this file, otherwise permissions for 
@@ -194,4 +198,4 @@ controllerTasks:
             tagValue: "@[ADWRKSHP_CONTROLLER_ACCT_NAME]"    
 
           - tagKey: "${ADWRKSHP_ACCT_ACCESS_KEY}"
-            tagValue: "@[ADWRKSHP_ACCT_ACCESS_KEY]"             
+            tagValue: "@[ADWRKSHP_ACCT_ACCESS_KEY]"
