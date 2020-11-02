@@ -81,7 +81,27 @@ templates:
       - tagKey: "${ADWRKSHP_APM_APP_NAME}"
         tagValue: "@[ADWRKSHP_APM_APP_NAME]"
 
+  - templateName: "lambda-environment-vars"
+    sourceFile: "./lambda-environment-vars.txt.template"
+    destinationFile: "../lambda-environment-vars.txt"
+    tags:
+      - tagKey: "${ADWRKSHP_CONTROLLER_HOST}"
+        tagValue: "@[ADWRKSHP_CONTROLLER_HOST]"
 
+      - tagKey: "${ADWRKSHP_CONTROLLER_PORT}"
+        tagValue: "@[ADWRKSHP_CONTROLLER_PORT]"      
+        
+      - tagKey: "${ADWRKSHP_CONTROLLER_ACCT_NAME}"
+        tagValue: "@[ADWRKSHP_CONTROLLER_ACCT_NAME]"
+        
+      - tagKey: "${ADWRKSHP_CONTROLLER_ACCT_NAME}"
+        tagValue: "@[ADWRKSHP_CONTROLLER_ACCT_NAME]"
+                
+      - tagKey: "${ADWRKSHP_ACCT_ACCESS_KEY}"
+        tagValue: "@[ADWRKSHP_ACCT_ACCESS_KEY]"
+
+      - tagKey: "${ADWRKSHP_APM_APP_NAME}"
+        tagValue: "@[ADWRKSHP_APM_APP_NAME]"
 
 controllerTasks:
 
