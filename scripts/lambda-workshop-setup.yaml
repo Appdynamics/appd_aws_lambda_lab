@@ -93,9 +93,6 @@ templates:
         
       - tagKey: "${ADWRKSHP_CONTROLLER_ACCT_NAME}"
         tagValue: "@[ADWRKSHP_CONTROLLER_ACCT_NAME]"
-        
-      - tagKey: "${ADWRKSHP_CONTROLLER_ACCT_NAME}"
-        tagValue: "@[ADWRKSHP_CONTROLLER_ACCT_NAME]"
                 
       - tagKey: "${ADWRKSHP_ACCT_ACCESS_KEY}"
         tagValue: "@[ADWRKSHP_ACCT_ACCESS_KEY]"
