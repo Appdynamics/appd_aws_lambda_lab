@@ -112,19 +112,19 @@ module.exports.doFunctionAsync2 = async (event, context) => {
 
     id = ids[_.random(ids.length - 1)];
 
-    // TODO: Add second exit call to DynamoDB
+    // TODO: Add third exit call to DynamoDB
 
     try {
         var person = await getPerson(id);
 
-        // TODO: End second exit call
+        // TODO: End third exit call
 
         context.succeed(person);
     } catch (e) {
 
-        // TODO: Report second exit call error
+        // TODO: Report third exit call error
 
-        // TODO: End second exit call
+        // TODO: End third exit call
         
         context.fail(e);
     }
