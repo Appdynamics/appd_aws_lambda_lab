@@ -32,6 +32,7 @@ public class FrontEndHandler implements RequestHandler<Map<String, Object>, ApiG
 	@Override
 	public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {
 		LOG.info("received: {}", input);
+		ApiGatewayResponse response;
 
 		// TODO: Add in code to build tracer.
 
@@ -39,9 +40,7 @@ public class FrontEndHandler implements RequestHandler<Map<String, Object>, ApiG
 		Faker faker = new Faker();
 
 		if (path.equals("/orders/submit")) {
-			CommerceOrder order = new CommerceOrder.Builder().random().build();
-
-			// TODO: Add exit call
+			CommerceOrder order = new CommerceOrder.Builder().random().build();			
 
 			try {
 				order.save();
@@ -49,18 +48,20 @@ public class FrontEndHandler implements RequestHandler<Map<String, Object>, ApiG
 						new TypeReference<Map<String, Object>>() {
 						});
 				Response responseBody = new Response("OrderCreated", order_map);
-				return ApiGatewayResponse.builder().setStatusCode(201).setObjectBody(responseBody)
+				response = ApiGatewayResponse.builder().setStatusCode(201).setObjectBody(responseBody)
 						.setHeaders(Collections.singletonMap("X-Powered-By", faker.gameOfThrones().character()))
 						.build();
 			} catch (IOException e) {
 				Map<String, Object> error_map = new HashMap<String, Object>();
 				error_map.put("error_msg", e.getMessage());
 				Response responseBody = new Response("Error", error_map);
-				return ApiGatewayResponse.builder().setStatusCode(500).setObjectBody(responseBody)
+				response = ApiGatewayResponse.builder().setStatusCode(500).setObjectBody(responseBody)
 						.setHeaders(Collections.singletonMap("X-Powered-By", faker.gameOfThrones().character()))
 						.build();
 			}
 		} else if (path.equals("/orders/recent")) {
+
+			// TODO: Add exit call
 
 			String lambda_to_call = context.getFunctionName().replace("lambda-1", "lambda-2");
 			AWSLambda lambdaClient = AWSLambdaClientBuilder.standard().withRegion(System.getenv("AWS_REGION_STR")).build();
@@ -75,17 +76,21 @@ public class FrontEndHandler implements RequestHandler<Map<String, Object>, ApiG
 				resp_map.put("orders", results);
 
 				Response responseBody = new Response("Success", resp_map);
-				return ApiGatewayResponse.builder().setStatusCode(200).setObjectBody(responseBody)
+				response = ApiGatewayResponse.builder().setStatusCode(200).setObjectBody(responseBody)
 						.setHeaders(Collections.singletonMap("X-Powered-By", faker.gameOfThrones().character()))
 						.build();
 			} catch (Throwable e) {
+				// TODO: Add code to report error for exit call
+
 				Map<String, Object> error_map = new HashMap<String, Object>();
 				error_map.put("error_msg", e.getMessage());
 				Response responseBody = new Response("Error", error_map);
-				return ApiGatewayResponse.builder().setStatusCode(500).setObjectBody(responseBody)
+				response = ApiGatewayResponse.builder().setStatusCode(500).setObjectBody(responseBody)
 						.setHeaders(Collections.singletonMap("X-Powered-By", faker.gameOfThrones().character()))
 						.build();
 			}
+
+			// TODO: Add code to end exit call			
 
 		} else {
 
@@ -98,9 +103,13 @@ public class FrontEndHandler implements RequestHandler<Map<String, Object>, ApiG
 			}
 
 			Response responseBody = new Response("Success", input);
-			return ApiGatewayResponse.builder().setStatusCode(200).setObjectBody(responseBody)
+			response = ApiGatewayResponse.builder().setStatusCode(200).setObjectBody(responseBody)
 					.setHeaders(Collections.singletonMap("X-Powered-By", faker.gameOfThrones().character())).build();
 		}
+
+		// TODO: Add code to end transaction
+
+		return response;
 
 	}
 
