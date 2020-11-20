@@ -29,6 +29,8 @@ public class FrontEndHandler implements RequestHandler<Map<String, Object>, ApiG
 
 	private static final Logger LOG = LogManager.getLogger(FrontEndHandler.class);	
 
+	// TODO: Add variables for the tracer and transaction
+
 	@Override
 	public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {
 		LOG.info("received: {}", input);
