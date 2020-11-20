@@ -63,9 +63,10 @@ public class FrontEndHandler implements RequestHandler<Map<String, Object>, ApiG
 			}
 		} else if (path.equals("/orders/recent")) {
 
-			// TODO: Add exit call
-
 			String lambda_to_call = context.getFunctionName().replace("lambda-1", "lambda-2");
+			
+			// TODO: Add exit call
+	
 			AWSLambda lambdaClient = AWSLambdaClientBuilder.standard().withRegion(System.getenv("AWS_REGION_STR")).build();
 			InvokeRequest request = new InvokeRequest().withFunctionName(lambda_to_call).withPayload("{}");
 
