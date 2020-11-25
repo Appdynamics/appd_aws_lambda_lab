@@ -30,7 +30,7 @@ done
 sudo growpart /dev/nvme0n1 1
 
 # Expand the size of the file system.
-sudo resize2fs /dev/nvme0n1p1
+sudo xfs_growfs -d /
 
 chmod +x ${BASE_DIR}/scripts/*.sh
 
