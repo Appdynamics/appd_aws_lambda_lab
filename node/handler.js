@@ -34,7 +34,6 @@ module.exports.doFunctionAsync = async (event, context) => {
 
             
         } catch (e) {            
-            // TODO: Add in first error reporting for exit call
 
             response.statusCode = 500;
             var result = {
