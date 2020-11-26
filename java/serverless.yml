@@ -17,6 +17,7 @@ provider:
     ORDERS_TABLE_NAME: ${self:service}-${opt:state, self:provider.stage}-##UNIQUE_ID##
     AWS_REGION_STR: ${opt:region, self:provider.region}
     APPDYNAMICS_ACCOUNT_NAME: ""
+    APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY: ""
     APPDYNAMICS_APPLICATION_NAME: ""
     APPDYNAMICS_CONTROLLER_HOST: ""
     APPDYNAMICS_SERVERLESS_API_ENDPOINT: ""
