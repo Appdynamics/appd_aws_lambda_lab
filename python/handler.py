@@ -1,4 +1,5 @@
 #TODO: Add tracer import
+import appdynamics
 
 import json
 from faker import Faker
@@ -20,14 +21,12 @@ def lambda_function(event, context):
         responsePayload = response['Payload'].read().decode('utf-8')        
 
         if responsePayload is None:
-            #TODO: Add in error reporting.
 
             retval = {
                 "statusCode" : 404,
                 "body" : None
             }
         elif randint(1, 100) == 74:       
-            #TODO: Add in error reporting.
 
             retval = {
                 "statusCode" : 500,
@@ -45,31 +44,30 @@ def lambda_function(event, context):
         key = uuid.uuid4().hex + ".json"
 
         #TODO: Add in S3 exit call
-        try:
-            s3_client = boto3.client('s3')
-            s3_client.put_object(Body=profile, Bucket=os.environ["CANDIDATE_S3_BUCKET"], Key=key)
-
-            body = {
-                "message": "Uploaded successfully.",                    
-                "file" : key
-            }
-
-            retval = {
-                "statusCode": 201,
-                "body": json.dumps(body)
-            }
-        except Exception as e:
-
-            #TODO: Add in S3 exit call error reporting
-
-            body = {
-                "message": "Could not upload resume."
-            }
-
-            retval = {
-                "statusCode": 500,
-                "body": json.dumps(body)
-            }
+        with appdynamics.ExitCallContextManager(exit_point_type="CUSTOM", exit_point_sub_type="Amazon S3", identifying_properties={"BUCKET NAME" : os.environ["CANDIDATE_S3_BUCKET"]}) as ec:
+            try:
+                s3_client = boto3.client('s3')
+                s3_client.put_object(Body=profile, Bucket=os.environ["CANDIDATE_S3_BUCKET"], Key=key)
+    
+                body = {
+                    "message": "Uploaded successfully.",                    
+                    "file" : key
+                }
+    
+                retval = {
+                    "statusCode": 201,
+                    "body": json.dumps(body)
+                }
+            except Exception as e:
+    
+                body = {
+                    "message": "Could not upload resume."
+                }
+    
+                retval = {
+                    "statusCode": 500,
+                    "body": json.dumps(body)
+                }
 
        #TODO: End exit call
 
