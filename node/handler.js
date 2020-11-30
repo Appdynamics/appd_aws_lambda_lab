@@ -56,6 +56,9 @@ module.exports.doFunctionAsync = async (event, context) => {
 
         }
         // TODO: End first exit call
+        if (tracer != null && exitCall != null) {
+            tracer.stopExitCall(exitCall);
+        }
 
     } else if (event.path == "/person/random") {
         const lambda = new AWS.Lambda();
