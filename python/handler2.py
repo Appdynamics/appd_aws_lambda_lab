@@ -8,6 +8,8 @@ import os
 def lambda_function(event, context):
 
     s3_client = boto3.client('s3')
+    objs = None
+    obj = None
 
     #TODO: Add in S3 exit call
     objs = s3_client.list_objects_v2(Bucket = os.environ["CANDIDATE_S3_BUCKET"])['Contents']

@@ -19,15 +19,13 @@ def lambda_function(event, context):
 
         responsePayload = response['Payload'].read().decode('utf-8')        
 
-        if responsePayload is None:
-            #TODO: Add in error reporting.
+        if responsePayload is None:            
 
             retval = {
                 "statusCode" : 404,
                 "body" : None
             }
-        elif randint(1, 100) == 74:       
-            #TODO: Add in error reporting.
+        elif randint(1, 100) == 74:                  
 
             retval = {
                 "statusCode" : 500,
@@ -58,9 +56,7 @@ def lambda_function(event, context):
                 "statusCode": 201,
                 "body": json.dumps(body)
             }
-        except Exception as e:
-
-            #TODO: Add in S3 exit call error reporting
+        except Exception as e:            
 
             body = {
                 "message": "Could not upload resume."
