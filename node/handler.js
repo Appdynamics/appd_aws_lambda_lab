@@ -93,8 +93,7 @@ module.exports.doFunctionAsync2 = async (event, context) => {
 
     try {
         id_results = await getPersonIds();
-    } catch (e) {
-        // TODO: Report second exit call error
+    } catch (e) {        
 
         // TODO: End second exit call
 
@@ -119,9 +118,7 @@ module.exports.doFunctionAsync2 = async (event, context) => {
         // TODO: End third exit call
 
         context.succeed(person);
-    } catch (e) {
-
-        // TODO: Report third exit call error
+    } catch (e) {        
 
         // TODO: End third exit call
         
