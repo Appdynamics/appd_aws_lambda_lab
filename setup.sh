@@ -6,7 +6,7 @@ BASE_DIR=$(pwd)
 UNIQUE_LAB_ID=$(uuidgen | tail -c 7)
 AUTH=eyJwYXNzd29yZCI6IkMxc2MwMTIzIyJ9
 export AWS_REGION=$(aws configure get region)
-sed -i 's/##UNIQUE_ID##/${UNIQUE_LAB_ID}/g' ./scripts/hidden.env.template
+sed -i "s/##UNIQUE_ID##/${UNIQUE_LAB_ID}/g" ./scripts/hidden.env.template
 
 # Run Java file to scaffold application / user / role.
 echo "Creating workshop user and application..."
