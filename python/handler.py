@@ -20,7 +20,7 @@ def lambda_function(event, context):
 
         responsePayload = response['Payload'].read().decode('utf-8')        
 
-        if responsePayload is None:
+        if responsePayload is None:            
 
             retval = {
                 "statusCode" : 404,
