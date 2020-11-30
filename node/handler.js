@@ -1,4 +1,5 @@
 // TODO: Add in call to require AppDynamics Tracer
+const tracer = require('appdynamics-lambda-tracer');
 
 const AWS = require('aws-sdk');
 const _ = require('lodash');
@@ -19,6 +20,16 @@ module.exports.doFunctionAsync = async (event, context) => {
     if (event.path == "/person/submit") {
         var person = personInfo();
         // TODO: Add in first exit call creation for DynamoDB
+        var exitCall = null;
+        if (tracer != null) {
+            exitCall = tracer.startExitCall({
+                exitType: 'CUSTOM',
+                exitSubType: 'Amazon Web Services',
+                identifyingProperties: {
+                    'VENDOR': process.env.CANDIDATE_TABLE + " DynamoDB"
+                }
+            });
+        }
 
         try {
             
@@ -90,18 +101,33 @@ module.exports.doFunctionAsync2 = async (event, context) => {
     var id_results, ids, id;
 
     // TODO: Add second exit call to DynamoDB
+    var exitCall = null;
+    if (tracer != null) {
+        exitCall = tracer.startExitCall({
+            exitType: 'CUSTOM',
+            exitSubType: 'Amazon Web Services',
+            identifyingProperties: {
+                'VENDOR': process.env.CANDIDATE_TABLE + " DynamoDB"
+            }
+        });
+    }
 
     try {
         id_results = await getPersonIds();
     } catch (e) {
-        // TODO: Report second exit call error
 
         // TODO: End second exit call
+        if (tracer != null && exitCall != null) {
+            tracer.stopExitCall(exitCall);
+        }
 
         context.fail(e);
     }
 
     // TODO: End second exit call 
+    if (tracer != null && exitCall != null) {
+        tracer.stopExitCall(exitCall);
+    }
 
     ids = _(id_results.Items).map(function (i) {
         return i.id;
@@ -112,18 +138,32 @@ module.exports.doFunctionAsync2 = async (event, context) => {
     id = ids[_.random(ids.length - 1)];
 
     // TODO: Add third exit call to DynamoDB
+    var exitCall2 = null;
+    if (tracer != null) {
+        exitCall2 = tracer.startExitCall({
+            exitType: 'CUSTOM',
+            exitSubType: 'Amazon Web Services',
+            identifyingProperties: {
+                'VENDOR': process.env.CANDIDATE_TABLE + " DynamoDB"
+            }
+        });
+    }
 
     try {
         var person = await getPerson(id);
 
         // TODO: End third exit call
+        if (tracer != null && exitCall2 != null) {
+            tracer.stopExitCall(exitCall2);
+        }
 
         context.succeed(person);
     } catch (e) {
 
-        // TODO: Report third exit call error
-
         // TODO: End third exit call
+        if (tracer != null && exitCall2 != null) {
+            tracer.stopExitCall(exitCall2);
+        }
         
         context.fail(e);
     }
