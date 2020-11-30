@@ -16,6 +16,8 @@ def lambda_function(event, context):
     idx = randint(0, len(objs) - 1)
 
     obj_key = objs[idx]['Key']    
+    
+    #TODO: Add in S3 exit call
     obj = s3_client.get_object(Bucket = os.environ["CANDIDATE_S3_BUCKET"], Key = obj_key)
     obj_contents = json.loads(obj['Body'].read().decode('utf-8'))
 
