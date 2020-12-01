@@ -1,5 +1,12 @@
 package com.appdynamics.lambda;
 
+//TODO: import AppDynamics tracer classes
+import com.appdynamics.serverless.tracers.aws.api.AppDynamics;
+import com.appdynamics.serverless.tracers.aws.api.MonitoredRequestStreamHandler;
+import com.appdynamics.serverless.tracers.aws.api.ExitCall;
+import com.appdynamics.serverless.tracers.aws.api.Tracer;
+import com.appdynamics.serverless.tracers.aws.api.Transaction;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,12 +26,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class BackEndHandler implements RequestStreamHandler {
+public class BackEndHandler extends MonitoredRequestStreamHandler {
 
     private static final Logger LOG = LogManager.getLogger(FrontEndHandler.class);    
     
     @Override
-    public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {            
+    public void handleMonitoredRequest(InputStream input, OutputStream output, Context context) throws IOException {            
 
 
         // Here we would usually do something based on input. 
