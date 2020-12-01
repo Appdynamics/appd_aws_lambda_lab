@@ -60,7 +60,7 @@ functions:
   lambda-1:
     handler: com.appdynamics.lambda.FrontEndHandler
     timeout: 30
-    memorySize: 256
+    memorySize: 1024
     events:
       - http:
           path: /{proxy+}
@@ -68,4 +68,4 @@ functions:
   lambda-2:
     handler: com.appdynamics.lambda.BackEndHandler
     timeout: 30
-    memorySize: 256
+    memorySize: 1024
