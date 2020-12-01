@@ -1,5 +1,7 @@
 package com.appdynamics.lambda;
 
+//TODO: import AppDynamics tracer classes
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -22,8 +24,6 @@ import com.appdynamics.lambda.dal.CommerceOrder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
-
-// TODO: Add in AppDynamics imports
 
 public class FrontEndHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
 
