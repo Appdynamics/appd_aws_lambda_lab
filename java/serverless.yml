@@ -26,8 +26,7 @@ provider:
 
   iamRoleStatements:
     - Effect: Allow
-      Action:
-        - secretsmanager:GetSecretValue
+      Action:        
         - dynamodb:Query
         - dynamodb:Scan
         - dynamodb:GetItem
