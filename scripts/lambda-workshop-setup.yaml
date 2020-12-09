@@ -14,9 +14,9 @@ vaultInfo:
     - name: auth
       value: /v1/auth/userpass/login/cloud-team
     - name: controller-info
-      value: /v1/kv/cloud-labs/lambda-controller-info
+      value: /v1/kv/cloud-labs/controller-info
     - name: controller-login-info
-      value: /v1/kv/cloud-labs/lambda-controller-login-info
+      value: /v1/kv/cloud-labs/controller-login-info
     - name: dbagent-s3-auth
       value: /v1/kv/cloud-labs/dbagent-s3-auth
 
