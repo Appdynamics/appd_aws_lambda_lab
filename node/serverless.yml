@@ -1,0 +1,75 @@
+service: appd-lambda-nodejs-##UNIQUE_ID##
+
+plugins:
+  - serverless-stack-output
+
+custom:
+  output:
+    handler: scripts/output.handler
+    file: .build/output.json
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+  # you can overwrite defaults here
+  stage: dev
+  environment:
+    AWS_REGION_STR: ${opt:region, self:provider.region}
+    CANDIDATE_TABLE: ${self:service}-${opt:stage, self:provider.stage}-##UNIQUE_ID##
+    CANDIDATE_EMAIL_TABLE: "candidate-email-${opt:stage, self:provider.stage}-##UNIQUE_ID##"
+    APPDYNAMICS_ACCOUNT_NAME: ""
+    APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY: ""
+    APPDYNAMICS_APPLICATION_NAME: ""
+    APPDYNAMICS_CONTROLLER_HOST: ""
+    APPDYNAMICS_SERVERLESS_API_ENDPOINT: ""
+    APPDYNAMICS_CONTROLLER_PORT: 443
+    APPDYNAMICS_LOG_LEVEL: ""    
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - lambda:InvokeFunction
+        - secretsmanager:GetSecretValue
+      Resource: "*"
+
+resources:
+  Resources:
+    CandidatesDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Delete
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: "NEW_AND_OLD_IMAGES"
+        TableName: ${self:provider.environment.CANDIDATE_TABLE}
+        TimeToLiveSpecification:
+          AttributeName: expiresAt
+          Enabled: true
+
+functions:
+  lambda-1:
+    handler: handler.doFunctionAsync
+    description: Sample Lambda function in NodeJS for AppD Lambda Instrumentation
+    memorySize: 128
+    events:
+      - http:
+          path: /{proxy+}
+          method: any    
+
+  lambda-2:
+    handler: handler.doFunctionAsync2
+    description: Second sample Lambda function
+    memorySize: 128
