@@ -1,0 +1,72 @@
+service: appd-lambda-java-##UNIQUE_ID##
+
+plugins:
+  - serverless-stack-output
+
+custom: 
+  output:
+    handler: scripts/output.handler
+    file: .build/output.json
+    
+provider:
+  name: aws
+  runtime: java8
+
+  stage: dev  
+  environment:
+    ORDERS_TABLE_NAME: ${self:service}-${opt:state, self:provider.stage}-##UNIQUE_ID##
+    AWS_REGION_STR: ${opt:region, self:provider.region}
+    APPDYNAMICS_ACCOUNT_NAME: ""
+    APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY: ""
+    APPDYNAMICS_APPLICATION_NAME: ""
+    APPDYNAMICS_CONTROLLER_HOST: ""
+    APPDYNAMICS_SERVERLESS_API_ENDPOINT: ""
+    APPDYNAMICS_CONTROLLER_PORT: 443
+    APPDYNAMICS_LOG_LEVEL: ""
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - lambda:InvokeFunction
+      Resource: "*"
+
+package:
+  artifact: 'target/appd-lambda-java-${self:provider.stage}.jar'
+
+resources:
+  Resources:
+    ordersTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Delete
+      Properties:
+        TableName: ${self:provider.environment.ORDERS_TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: "NEW_AND_OLD_IMAGES"
+
+functions:
+  lambda-1:
+    handler: com.appdynamics.lambda.FrontEndHandler
+    timeout: 30
+    memorySize: 1024
+    events:
+      - http:
+          path: /{proxy+}
+          method: any  
+  lambda-2:
+    handler: com.appdynamics.lambda.BackEndHandler
+    timeout: 30
+    memorySize: 1024
