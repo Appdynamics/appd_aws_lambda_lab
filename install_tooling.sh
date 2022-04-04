@@ -1,6 +1,8 @@
 start=$(date +%s)
 BASE_DIR=$(pwd)
 
+user_name="${user_name:-ec2-user}"
+
 # Increase disk size
 SIZE=${1:-80}
 
@@ -42,13 +44,30 @@ sudo wget https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-ma
 sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
 sudo yum install -y apache-maven
 
+echo "Sleeping for 5s"
+sleep 5
+
 # Setup tooling -- NodeJS / NPM 
 sudo ${BASE_DIR}/scripts/install_node.sh
+
+echo "Sleeping for 5s"
+sleep 5
+
 nvm use --lts
+
+echo "Sleeping for 5s"
+sleep 5
 
 # Setup tooling -- Serverless framework + jq
 sudo ${BASE_DIR}/scripts/install_serverless.sh 
+
+echo "Sleeping for 5s"
+sleep 5
+
 sudo yum install -y jq
+
+echo "Sleeping for 5s"
+sleep 5
 
 # Setup tooling -- Docker / Docker Compose
 sudo curl --silent -L https://github.com/docker/compose/releases/download/1.27.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose

@@ -8,13 +8,16 @@ start=$(date +%s)
 echo "Stopping main application..."
 kill $(ps aux | grep '[b]ash ./load.sh' | awk '{print $2}')
 cd $BASE_DIR/docker-compose
-./stop.sh &> /dev/null || { echo "Could not stop main application."; exit 1; }
+./stop.sh &> /dev/null || { echo "Could not stop main application."; }
 rm .env
 echo "Main application stopped."
 
 echo
 echo "----------"
 echo
+
+echo "Sleeping for 5s"
+sleep 5
 
 # Removing Python Lambda
 echo "Removing Python Lambda function..."
@@ -25,6 +28,9 @@ echo "Python Lambda function removed."
 echo
 echo "----------"
 echo
+
+echo "Sleeping for 5s"
+sleep 5
 
 # Removing Java Lambda
 echo "Removing Java Lambda function..."

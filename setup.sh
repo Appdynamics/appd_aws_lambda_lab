@@ -13,6 +13,9 @@ cd $BASE_DIR/scripts
 java -DworkshopUtilsConf=./lambda-workshop-setup.yaml -DworkshopLabUserPrefix=$UNIQUE_LAB_ID -DworkshopAction=setup -jar ./AD-Workshop-Utils.jar
 echo "Workshop user and application created."
 
+echo "Sleeping for 5s"
+sleep 5
+
 # Auto-deploy uninstrumented Python Lambda
 echo "Deploying Python Lambda function..."
 cd $BASE_DIR/python
@@ -26,6 +29,9 @@ echo
 echo "----------"
 echo
 
+echo "Sleeping for 5s"
+sleep 5
+
 # Auto-deploy uninstrumented NodeJS Lambda
 cd $BASE_DIR/node
 echo "Deploying Node Lambda function..."
@@ -38,6 +44,9 @@ echo "Node Lambda function deployed."
 echo
 echo "----------"
 echo
+
+echo "Sleeping for 5s"
+sleep 5
 
 # Auto-deploy uninstrumented Java Lambda
 cd $BASE_DIR/java
