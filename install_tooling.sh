@@ -1,9 +1,37 @@
 start=$(date +%s)
 BASE_DIR=$(pwd)
 
+rm -rf $BASE_DIR/.git
+
 user_name="${user_name:-ec2-user}"
 
 export AWS_REGION=$(aws configure get region)
+
+export AWS_RETRY_MODE=standard
+export AWS_MAX_ATTEMPTS=100
+
+echo "####################################################################################################"
+echo " Be prepared to wait up to 20 minutes or more for the volume resizing to complete."
+echo " The 'aws ec2 modify-volume' service used is frequently unavailable so this script" 
+echo " is set to retry 100 times to try and connect to the service."
+echo ""
+echo " Please be patient and take a bio-io and or grab your favorite snack or drink while waiting :)"
+echo " You can safely stop this script during this phase if desired and rerun it at a later time as well."
+echo "####################################################################################################"
+
+STARTDATE=$(date)
+
+echo ""
+echo "####################################################################################################"
+echo " Start Time for 'aws ec2 modify-volume' service"
+echo " "$STARTDATE
+echo "####################################################################################################"
+
+SECONDS=0
+
+
+echo ""
+
 
 # Increase disk size
 SIZE=${1:-80}
@@ -35,6 +63,27 @@ sudo growpart /dev/nvme0n1 1
 
 # Expand the size of the file system.
 sudo xfs_growfs -d /
+
+duration=$SECONDS
+
+ENDDATE=$(date)
+
+echo ""
+echo "####################################################################################################"
+echo " End Time for 'aws ec2 modify-volume' service"
+echo " "$ENDDATE
+echo ""
+echo " $(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed for 'aws ec2 modify-volume' service."
+echo "####################################################################################################"
+
+
+echo ""
+df -H
+echo ""
+echo "####################################################################################################"
+echo " Finished Resizing Local EBS Volume"
+echo "####################################################################################################"
+echo ""
 
 chmod +x ${BASE_DIR}/scripts/*.sh
 

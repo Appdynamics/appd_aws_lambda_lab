@@ -56,7 +56,14 @@ else
   cd $BASE_DIR/python
   sed -i "s/##UNIQUE_ID##/$UNIQUE_LAB_ID/g" ./serverless.yml
   npm install --quiet --save serverless-python-requirements serverless-s3-remover serverless-stack-output
+  echo ""
+  echo "####################################################################################################"
+  echo " Fixing NPM vunerabilities"
+  echo "####################################################################################################"  
   npm audit fix
+  echo "####################################################################################################"
+  echo " Finished fixing NPM vunerabilities"
+  echo "####################################################################################################"    
   mkdir -p .build
   sls deploy -r $AWS_REGION
   cat .build/output.json | jq -r '.ServiceEndpoint' | xargs -I {} sh -c "sed -i 's|##PYTHON_LAMBDA_URL##|{}|g' ../docker-compose/graph.json"
@@ -83,7 +90,13 @@ else
   echo "Deploying Node Lambda function..."
   sed -i "s/##UNIQUE_ID##/$UNIQUE_LAB_ID/g" ./serverless.yml
   npm install --quiet && npm install --quiet --save serverless-stack-output
+  echo "####################################################################################################"
+  echo " Fixing NPM vunerabilities"
+  echo "####################################################################################################"  
   npm audit fix
+  echo "####################################################################################################"
+  echo " Finished fixing NPM vunerabilities"
+  echo "####################################################################################################"    
   mkdir -p .build
   sls deploy -r $AWS_REGION
   cat .build/output.json | jq -r '.ServiceEndpoint' | xargs -I {} sh -c "sed -i 's|##NODEJS_LAMBDA_URL##|{}|g' ../docker-compose/graph.json"
@@ -109,7 +122,13 @@ else
   echo "Deploying Java Lambda Function..."
   sed -i "s/##UNIQUE_ID##/$UNIQUE_LAB_ID/g" ./serverless.yml
   npm install --quiet --save serverless-stack-output
+  echo "####################################################################################################"
+  echo " Fixing NPM vunerabilities"
+  echo "####################################################################################################"  
   npm audit fix
+  echo "####################################################################################################"
+  echo " Finished fixing NPM vunerabilities"
+  echo "####################################################################################################"    
   mvn clean package || { echo "Java build failed."; exit 1; }
   mkdir -p .build 
   sls deploy -r $AWS_REGION

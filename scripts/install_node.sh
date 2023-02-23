@@ -47,7 +47,7 @@ runuser -c "nvm --version" - ${user_name}
 
 # install node.js javascript runtime. --------------------------------------------------------------
 # install current node.js lts (long term support) version.
-runuser -c "nvm install --lts" - ${user_name}
+runuser -c "nvm install 16" - ${user_name}
 
 # verify node installation.
 runuser -c "node --version" - ${user_name}
