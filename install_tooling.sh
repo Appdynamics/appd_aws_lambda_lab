@@ -3,6 +3,8 @@ BASE_DIR=$(pwd)
 
 user_name="${user_name:-ec2-user}"
 
+export AWS_REGION=$(aws configure get region)
+
 # Increase disk size
 SIZE=${1:-80}
 
@@ -53,7 +55,7 @@ sudo ${BASE_DIR}/scripts/install_node.sh
 echo "Sleeping for 5s"
 sleep 5
 
-nvm use --lts
+nvm use 16
 
 echo "Sleeping for 5s"
 sleep 5
@@ -85,7 +87,7 @@ echo "npm version"
 npm --version 
 echo "===================="
 echo "Serverless version"
-serverless --version
+sudo runuser -c "serverless --version" - ${user_name}
 echo "===================="
 echo "Maven version"
 mvn -version

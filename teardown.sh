@@ -4,11 +4,13 @@ BASE_DIR=$(pwd)
 
 start=$(date +%s)
 
+export AWS_REGION=$(aws configure get region)
+
 # Stopping main application
 echo "Stopping main application..."
 kill $(ps aux | grep '[b]ash ./load.sh' | awk '{print $2}')
 cd $BASE_DIR/docker-compose
-./stop.sh &> /dev/null || { echo "Could not stop main application."; }
+./stop.sh
 rm .env
 echo "Main application stopped."
 
@@ -22,7 +24,7 @@ sleep 5
 # Removing Python Lambda
 echo "Removing Python Lambda function..."
 cd $BASE_DIR/python
-sls remove -r $AWS_REGION &> /dev/null || { echo "Could not remove Python Lambdas."; exit 1; }
+sls remove -r $AWS_REGION
 echo "Python Lambda function removed."
 
 echo
@@ -35,7 +37,7 @@ sleep 5
 # Removing Java Lambda
 echo "Removing Java Lambda function..."
 cd $BASE_DIR/java
-sls remove -r $AWS_REGION &> /dev/null || { echo "Could not remove Java Lambdas."; exit 1; }
+sls remove -r $AWS_REGION
 echo "Java Lambda function removed."
 
 echo
@@ -45,7 +47,7 @@ echo
 # Removing Node Lambda
 echo "Removing Node Lambda function..."
 cd $BASE_DIR/node
-sls remove -r $AWS_REGION &> /dev/null || { echo "Could not remove Node Lambdas."; exit 1; }
+sls remove -r $AWS_REGION
 echo "Node Lambda function removed."
 
 # Run Java file to scaffold application / user / role.
