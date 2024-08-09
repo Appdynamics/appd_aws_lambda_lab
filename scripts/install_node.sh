@@ -35,7 +35,7 @@ curdate=$(date +"%Y-%m-%d.%H-%M-%S")
 # retrieve version number of latest release.
 #curl --silent --dump-header curl-nvm.${curdate}.out https://github.com/nvm-sh/nvm/releases/latest --output /dev/null
 #nvm_release=$(awk '{ sub("\r$", ""); print }' curl-nvm.${curdate}.out | awk '/Location/ {print $2}' | awk -F "/" '{print $8}')
-nvm_release="v0.39.3"
+nvm_release="v0.40.0"
 #rm -f curl-nvm.${curdate}.out
 
 
@@ -47,7 +47,7 @@ runuser -c "nvm --version" - ${user_name}
 
 # install node.js javascript runtime. --------------------------------------------------------------
 # install current node.js lts (long term support) version.
-runuser -c "nvm install 16" - ${user_name}
+runuser -c "nvm install 18" - ${user_name}
 
 # verify node installation.
 runuser -c "node --version" - ${user_name}

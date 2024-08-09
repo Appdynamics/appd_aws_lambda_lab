@@ -55,7 +55,10 @@ else
   echo "Deploying Python Lambda Function..."
   cd $BASE_DIR/python
   sed -i "s/##UNIQUE_ID##/$UNIQUE_LAB_ID/g" ./serverless.yml
-  npm install --quiet --save serverless-python-requirements serverless-s3-remover serverless-stack-output
+  #npm install --quiet --save serverless-python-requirements serverless-s3-remover serverless-stack-output
+  sls plugin install -n serverless-python-requirements
+  sls plugin install -n serverless-s3-remover
+  sls plugin install -n serverless-stack-output
   echo ""
   echo "####################################################################################################"
   echo " Fixing NPM vunerabilities"
@@ -89,7 +92,7 @@ else
   cd $BASE_DIR/node
   echo "Deploying Node Lambda function..."
   sed -i "s/##UNIQUE_ID##/$UNIQUE_LAB_ID/g" ./serverless.yml
-  npm install --quiet && npm install --quiet --save serverless-stack-output
+  sls plugin install -n serverless-stack-output
   echo "####################################################################################################"
   echo " Fixing NPM vunerabilities"
   echo "####################################################################################################"  
@@ -113,7 +116,7 @@ fi
 
 if [ -f "${BASE_DIR}/scripts/appd_java_created.txt" ]; then
 	
-  echo "Node Java Lambda Function already deployed."
+  echo "Java Lambda Function already deployed."
 
 else
 
@@ -121,7 +124,7 @@ else
   cd $BASE_DIR/java
   echo "Deploying Java Lambda Function..."
   sed -i "s/##UNIQUE_ID##/$UNIQUE_LAB_ID/g" ./serverless.yml
-  npm install --quiet --save serverless-stack-output
+  sls plugin install -n serverless-stack-output
   echo "####################################################################################################"
   echo " Fixing NPM vunerabilities"
   echo "####################################################################################################"  

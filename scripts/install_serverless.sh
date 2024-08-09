@@ -33,7 +33,7 @@ user_name="${user_name:-ec2-user}"
 #fi
 
 # install serverless framework cli. ----------------------------------------------------------------
-runuser -c "npm install -g serverless@latest" - ${user_name}
+runuser -c "npm install -g serverless@3" - ${user_name}
 
 # verify serverless installation.
 runuser -c "serverless --version" - ${user_name}

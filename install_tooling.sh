@@ -37,25 +37,18 @@ echo ""
 SIZE=${1:-80}
 
 # Get the ID of the environment host Amazon EC2 instance.
-INSTANCEID=$(curl --silent http://169.254.169.254/latest/meta-data//instance-id)
+# INSTANCEID=$(curl --silent http://169.254.169.254/latest/meta-data//instance-id)
+INSTANCEID=$(ec2-metadata -i | cut -d ' ' -f 2)
 
 # Get the ID of the Amazon EBS volume associated with the instance.
-VOLUMEID=$(aws ec2 describe-instances \
-  --instance-id $INSTANCEID \
-  --query "Reservations[0].Instances[0].BlockDeviceMappings[0].Ebs.VolumeId" \
-  --output text)
+VOLUMEID=$(aws ec2 describe-instances --instance-id $INSTANCEID --query "Reservations[0].Instances[0].BlockDeviceMappings[0].Ebs.VolumeId" --output text)
 
 # Resize the EBS volume.
 aws ec2 modify-volume --volume-id $VOLUMEID --size $SIZE
 
 # Wait for the resize to finish.
-while [ \
-  "$(aws ec2 describe-volumes-modifications \
-    --volume-id $VOLUMEID \
-    --filters Name=modification-state,Values="optimizing","completed" \
-    --query "length(VolumesModifications)"\
-    --output text)" != "1" ]; do
-sleep 1
+while [ "$(aws ec2 describe-volumes-modifications --volume-id $VOLUMEID --filters Name=modification-state,Values="optimizing","completed" --query "length(VolumesModifications)" --output text)" != "1" ]; do
+  sleep 1
 done
 
 # Rewrite the partition table so that the partition takes up all the space that it can.
@@ -104,7 +97,7 @@ sudo ${BASE_DIR}/scripts/install_node.sh
 echo "Sleeping for 5s"
 sleep 5
 
-nvm use 16
+nvm use 18
 
 echo "Sleeping for 5s"
 sleep 5
@@ -121,7 +114,7 @@ echo "Sleeping for 5s"
 sleep 5
 
 # Setup tooling -- Docker / Docker Compose
-sudo curl --silent -L https://github.com/docker/compose/releases/download/1.27.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+sudo curl --silent -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose version
 
